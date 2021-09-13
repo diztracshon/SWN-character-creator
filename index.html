@@ -80,16 +80,7 @@ tw-sidebar {
 ))
 
 (set: $attUp to 0)
-(set: $upLvl to (a:
-	1,1,3,6,9
-))
 
-(set: $save to (dm:
-	&quot;Physical&quot;, 15,
-	&quot;Evasion&quot;, 15,
-	&quot;Mental&quot;, 15,
-	&quot;Luck&quot;, 15
-))
 
 (set: $luck to false)
 
@@ -148,11 +139,11 @@ tw-sidebar {
 		$hpB to 0,
 		$bab to 0,
 		$babM to 2,
-		$class to &quot;none&quot;,
+		$class to &quot;&quot;,
 		$psychic to false,
 		$psySP to 0,
 		$babB to (a:),
-		$advPsy to &quot;none&quot;
+		$advPsy to (a:)
 )
 
 (display: &quot;foci init 1&quot;)
@@ -170,7 +161,8 @@ tw-sidebar {
 (set: $effort to (dm:
 	&quot;C&quot;, 0,
 	&quot;S&quot;, 0,
-	&quot;D&quot;, 0
+	&quot;D&quot;, 0,
+	&quot;B&quot;, 0
 ))
 
 (set: $pTech to (dm:
@@ -194,6 +186,10 @@ tw-sidebar {
 (display: &quot;gear init&quot;)
 
 (set: $ammo to (dm:))
+
+(display: &quot;save init&quot;)
+
+(display: &quot;class init&quot;)
 
 }&#39;&#39;Stars Without Number Character Creator&#39;&#39;
 From revised free edition
@@ -271,33 +267,17 @@ _att: (print: $att&#39;s (_att)&#39;s score) ((print: $attMod&#39;s ($att&#39;s 
 }]</tw-passagedata><tw-passagedata pid="5" name="pick att" tags="" position="200,250" size="100,100">{
 
 }&#39;&#39;Pick Attributes&#39;&#39;
-
 (for: each _att, ...(datanames: $att))[{
-_att ((print: $attMod&#39;s ($att&#39;s (_att)&#39;s score))):
-
-(if: $att&#39;s (_att)&#39;s score &gt; 3)[
-	(link: &quot;-&quot;)[
-		(set: $att&#39;s (_att)&#39;s score to it - 1)
-		(replace: ?att)[
-			(display: &quot;pick att&quot;)
-		]
-	]
-](else:)[-]
-
-(print: $att&#39;s (_att)&#39;s score)
-
-(if: $att&#39;s (_att)&#39;s score &lt; 18)[
-	(link: &quot;+&quot;)[
-		(set: $att&#39;s (_att)&#39;s score to it + 1)
-		(replace: ?att)[
-			(display: &quot;pick att&quot;)
-		]
-	]
-](else:)[+]
+_att: (input-box: bind $att&#39;s (_att)&#39;s score, &quot;XXX=&quot;)
 }
 ]
 
-[[Backgrounds]]</tw-passagedata><tw-passagedata pid="6" name="Backgrounds" tags="" position="0,400" size="100,100">{
+{(link: &quot;Backgrounds&quot;)[
+	(for: each _att, ...(datanames: $att))[
+		(set: $att&#39;s (_att)&#39;s score to (num: it))
+	]
+	(goto: &quot;Backgrounds&quot;)
+]}</tw-passagedata><tw-passagedata pid="6" name="Backgrounds" tags="" position="0,400" size="100,100">{
 
 }&#39;&#39;Backgrounds&#39;&#39;
 
@@ -774,11 +754,49 @@ _sk(if: $skList&#39;s (_sk)&#39;s score &gt;= 1)[(max)]: (print: $skList&#39;s (
 (link: &quot;desc&quot;)[(print: $skList&#39;s (_sk)&#39;s desc)]}
 ]</tw-passagedata><tw-passagedata pid="19" name="Class" tags="" position="0,925" size="100,100">{
 
-}&#39;&#39;Class&#39;&#39; p.17 (set: _classAr to (a:))(set: _ap to 0)(set: $test to &quot;&quot;)
+}&#39;&#39;Class(es)&#39;&#39;(set: _classL to (a:&quot;none&quot;,&quot;none&quot;))(set: _done to false)(set: _advPsy to 0)
 
 |class&gt;[(display: &quot;class dis&quot;)]
 
-|exclass&gt;[(display: &quot;ex class dis&quot;)]</tw-passagedata><tw-passagedata pid="20" name="psy skills init" tags="" position="225,1175" size="100,100">{
+{
+(link: &quot;Done&quot;)[
+	(set: _done to true)
+	(replace: ?class)[(display: &quot;class dis&quot;)]
+	(for: each _i, ...(range: 1,_classL&#39;s length))[
+	(if: _classL&#39;s (_i) is not &quot;none&quot;)[
+		(set: _classL&#39;s (_i) to it - &quot;2&quot;)
+		(if: _classL&#39;s (_i) contains &quot;adv&quot;)[
+			(if: _classL&#39;s (_i-1) is &quot;Adventurer&quot;)[
+				(set: $class to it + (_classL&#39;s (_i) - &quot;adv&quot;))
+			](elseif: _classL&#39;s (_i-2) is &quot;Adventurer&quot;)[
+				(set: $class to it + &quot;/&quot; + (_classL&#39;s (_i) - &quot;adv&quot;))
+			](else:)[
+				(set: $class to it + &quot;+&quot; + (_classL&#39;s (_i) - &quot;adv&quot;))
+			]
+			(print: $advList&#39;s (_classL&#39;s (_i)))
+		](else:)[
+			(if: _i is 3 and
+				_classL&#39;s (_i) is not &quot;Adventurer&quot;)[
+				(set: $class to it + _classL&#39;s (_i))
+			](elseif: _classL&#39;s (_i) is not &quot;Adventurer&quot;)[
+				(set: $class to it + &quot;+&quot; + _classL&#39;s (_i))
+			]
+			(print: $classList&#39;s (_classL&#39;s (_i)))
+		]
+	]]
+	(if: _advPsy is &gt; 0)[
+		|advpsy&gt;[(display: &quot;adv select&quot;)]
+		(link: &quot;Done again&quot;)[
+			(for: each _psy, ...$advPsy)[
+				(set: $psySkList&#39;s (_psy)&#39;s score to it + 1)
+			]
+			(goto: &quot;Foci&quot;)
+		]
+	](else:)[
+		(goto: &quot;Foci&quot;)
+	]
+]
+}</tw-passagedata><tw-passagedata pid="20" name="psy skills init" tags="" position="225,1175" size="100,100">{
 (set: $psySkList to (dm:
 	&quot;Biopsionics&quot;, (dm: &quot;desc&quot;, &quot;Master powers of physical repair, body augmentation, and shapeshifting.&quot;, &quot;score&quot;, -1, &quot;fp&quot;, 0),
 	&quot;Metapsionics&quot;, (dm: &quot;desc&quot;, &quot;Master powers that nullify, boost, and shape the use of other psychic abilities.&quot;, &quot;score&quot;, -1, &quot;fp&quot;, 0),
@@ -787,89 +805,22 @@ _sk(if: $skList&#39;s (_sk)&#39;s score &gt;= 1)[(max)]: (print: $skList&#39;s (
 	&quot;Telepathy&quot;, (dm: &quot;desc&quot;, &quot;Master the reading and influencing of other sapient minds.&quot;, &quot;score&quot;, -1, &quot;fp&quot;, 0),
 	&quot;Teleportation&quot;, (dm: &quot;desc&quot;, &quot;Master the arts of physical translocation of yourself and allies.&quot;, &quot;score&quot;, -1, &quot;fp&quot;, 0)
 ))
-}</tw-passagedata><tw-passagedata pid="21" name="ex class dis" tags="" position="250,925" size="100,100">&#39;&#39;Extra Class&#39;&#39;
-{Expert - (if: $class does not contain &quot;+Expert&quot; and
-	$class does not contain &quot;Expert/&quot; and
-	$class does not contain &quot;/Expert&quot;)[
-	(link: &quot;Select&quot;)[
-		(set: _classAr to it + (a:
-			&quot;(set: $skillP to it + 1)&quot;,
-			&quot;(set: $fociP to it + 1)&quot;
-		))
-		(set: $class to it + &quot;+Expert&quot;)
-		(replace: ?exclass)[(display: &quot;ex class dis&quot;)]
-	](else:)[
-	(link: &quot;Remove&quot;)[
-		(set: _classAr to it - (a:
-			&quot;(set: $skillP to it + 1)&quot;,
-			&quot;(set: $fociP to it + 1)&quot;
-		))
-		(set: $class to it - &quot;+Expert&quot;)
-		(replace: ?exclass)[(display: &quot;ex class dis&quot;)]
-	]
-]]}
-
-{Psychic - (if: $class does not contain &quot;+Psychic&quot; and
-	$class does not contain &quot;Psychic/&quot; and
-	$class does not contain &quot;/Psychic&quot;)[
-	(link: &quot;Select&quot;)[
-		(set: $class to it + &quot;+Psychic&quot;)
-		(replace: ?exclass)[(display: &quot;ex class dis&quot;)]
-	]
-](else:)[
-	(link: &quot;Remove&quot;)[
-		(set: $class to it - &quot;+Psychic&quot;)
-		(set: $advPsy to &quot;none&quot;)
-		(replace: ?exclass)[(display: &quot;ex class dis&quot;)]
-	]
-&lt;br&gt;
-(for: each _ps, ...(datanames: $psySkList))[
-	_ps (if: $advPsy is not _ps)[
-		(link: &quot;Select&quot;)[
-			(set: $advPsy to _ps)
-			(replace: ?exclass)[(display: &quot;ex class dis&quot;)]
-		]](else:)[Selected]
-		&lt;br&gt;
-	](else:)[Selected]
-]}
-
-{Warrior - (if: $class does not contain &quot;Warrior&quot; and
-	$class does not contain &quot;Warrior/&quot; and
-	$class does not contain &quot;/Warrior&quot;)[
-(link: &quot;Select&quot;)[
-	(set: _classAr to it + (a:
-		&quot;(set: $fociP to it + 1)&quot;,
-		&quot;(set: $babB to (a:1,5))&quot;,
-		&quot;(set: $hpB to it + 2)&quot;
-	))
-	(set: $class to it + &quot;+Warrior&quot;)
-	(replace: ?exclass)[(display: &quot;ex class dis&quot;)]
-](else:)[
-	(link: &quot;Remove&quot;)[
-		(set: _classAr to it - (a:
-			&quot;(set: $fociP to it + 1)&quot;,
-			&quot;(set: $babB to (a:1,5))&quot;,
-			&quot;(set: $hpB to it + 2)&quot;
-		))
-		(set: $class to it - &quot;+Warrior&quot;)
-		(replace: ?exclass)[(display: &quot;ex class dis&quot;)]
-	]
-]]}
-
-{(if: $class is not &quot;none&quot; and
-	$class is not &quot;Adventurer&quot; and
-	$class is not &quot;&quot;
-)[
-	(link: &quot;Done&quot;)[
-		(print: _classAr)
-		(if: $advPsy is not &quot;none&quot;)[
-			(set: $psySkList&#39;s ($advPsy)&#39;s score to 0)
+}</tw-passagedata><tw-passagedata pid="21" name="adv select" tags="" position="250,925" size="100,100">(for: each _ps, ...(datanames: $psySkList))[{
+	(link: _ps)[
+		(if: $advPsy contains _ps)[
+			(set: $advPsy to it - (a:_ps))
+			(set: _advPsy to it + 1)
+			(replace: ?advpsy)[(display: &quot;adv select&quot;)]
+		](elseif: _advPsy &gt; 0)[
+			(set: $advPsy to it + (a:_ps))
+			(set: _advPsy to it - 1)
+			(replace: ?advpsy)[(display: &quot;adv select&quot;)]
 		]
-		(goto: &quot;Foci&quot;)
-	]
-]}</tw-passagedata><tw-passagedata pid="22" name="Foci" tags="" position="0,1050" size="100,100">{
+	](if: $advPsy contains _ps)[ Selected](elseif: _advPsy &lt; 1)[ no more]
+}
+]</tw-passagedata><tw-passagedata pid="22" name="Foci" tags="" position="0,1050" size="100,100">{
 
-}&#39;&#39;Foci&#39;&#39;(set: _listF to $foci)(set: _anyS to $anyS)(set: _anyC to $anyC)(set: _or to $or)(set: _up to (a:))(set: _upC to (a:))(set: _upO to (a:))
+}&#39;&#39;Foci&#39;&#39;(set: _listF to $foci)(set: _anyS to $anyS)(set: _anyC to $anyC)(set: _or to $or)(set: _up to (a:))(set: _upC to (a:))(set: _upO to (a:))(set: _spec to &quot;none&quot;)
 |foci&gt;[(display: &quot;foci disp&quot;)]
 
 (link-reveal: &quot;Done&quot;)[, almost
@@ -893,7 +844,11 @@ _sk(if: $skList&#39;s (_sk)&#39;s score &gt;= 1)[(max)]: (print: $skList&#39;s (
 				(set: _listF to it + (a: _f))
 				(set: $anyC to it + 1)
 			](else:)[
-				(set: $skList&#39;s (_temp2&#39;s 1st)&#39;s score to it + 1)
+				(if: $level &lt; 2)[
+					(set: $skList&#39;s (_temp2&#39;s 1st)&#39;s score to it + 1)
+				](else:)[
+					(set: $skList&#39;s (_temp2&#39;s 1st)&#39;s fp to it + 3)
+				]
 			]
 		]
 	]
@@ -923,7 +878,8 @@ _sk(if: $skList&#39;s (_sk)&#39;s score &gt;= 1)[(max)]: (print: $skList&#39;s (
 		]
 		(goto: &quot;Psychic Skills&quot;)
 	]
-]}
+]
+}
 
 (link: &quot;Done, again&quot;)[Are you sure? (link: &quot;Yes&quot;)[{
 	&lt;!-- psychic skills p2 --&gt;
@@ -1059,7 +1015,7 @@ Wild talents are not treated as psychics for general purposes and cannot “torc
 ]
 ]}</tw-passagedata><tw-passagedata pid="28" name="Statblock" tags="" position="0,1550" size="100,100">{
 
-}&#39;&#39;Statblock&#39;&#39;(set: _edit to false)(set: _ske to (dm:))(set: _pske to (dm:))(set: _atte to (dm:))
+}&#39;&#39;Statblock&#39;&#39;(set: _edit to false)(set: _ske to (dm:))(set: _pske to (dm:))(set: _atte to (dm:))(set: _wed to 0)(set: _aed to 0)
 
 Name: |name&gt;[$name] {(link: &quot;Edit&quot;)[(replace: ?name)[
 (inputbox: bind $name, &quot;XX=&quot;)
@@ -1082,6 +1038,7 @@ Goal: |goal&gt;[$goal] {(link: &quot;Edit&quot;)[(replace: ?goal)[
 ]
 ]}
 |hp&gt;[(display: &quot;hp&quot;)], AC: |ac&gt;[(print: $ac&#39;s arm + $ac&#39;s sh)]
+(linkreveal: &quot;Special&quot;)[(if: $special is not &quot;&quot;)[$special]]
 
 |xp&gt;[(display: &quot;xp&quot;)]
 Skill Points: |sp&gt;[$sp]
@@ -1090,7 +1047,7 @@ Skill Points: |sp&gt;[$sp]
 
 &#39;&#39;Saves&#39;&#39;
 (for: each _sv, ...(datanames: $save))[{
-(if: _sv is &quot;luck&quot; and $luck is false)[](else:)[
+(if: _sv is &quot;Luck&quot; and $luck is false)[](else:)[
 _sv: (print: $save&#39;s (_sv))]}
 ]
 
@@ -1132,7 +1089,31 @@ Credits: |credits&gt;[$credits]
 
 &lt;div class=&quot;column&quot;&gt;(for: each _foci, ...(datanames: $fociList))[{
 (if: $fociP &gt; 0 and $foci does not contain (_foci + &quot;2&quot;))[
-	(link: _foci)[
+	(link-reveal: _foci)[
+		&lt;!-- specialist --&gt;
+		(if: _foci is &quot;Specialist&quot;)[
+			&lt;br&gt;
+			(for: each _sk, ...(datanames: $skList))[
+				(if: $skList&#39;s (_sk)&#39;s combat)[
+				](else:)[
+					(link-rerun: _sk)[ current?
+						(set: _spec to _sk)
+					]&lt;br&gt;
+				]
+			]&lt;br&gt;
+			(link: &quot;Done&quot;)[
+				(set: $fociList to it + (dm: &quot;Specialist (&quot; + _spec + &quot;)&quot;,
+					(dm:
+						&quot;desc&quot;, $fociList&#39;s Specialist&#39;s desc,
+						&quot;one&quot;, &quot;Gain &quot; + _spec + &quot; as a bonus skill.&quot; + ((split: (p: &quot;.&quot;), $fociList&#39;s Specialist&#39;s one)&#39;s 2nd),
+						&quot;two&quot;, $fociList&#39;s Specialist&#39;s two
+					)
+				))
+				(set: $fociP to it - 1)
+				(set: $foci to it + (a: &quot;Specialist (&quot; + _spec + &quot;)&quot;))
+				(replace: ?foci)[(display: &quot;foci disp&quot;)]
+			]&lt;br&gt;&lt;br&gt;
+		](else:)[
 		(set: $fociP to it - 1)
 		(if: $foci contains _foci)[
 			(set: $foci to it + (a: _foci + &quot;2&quot;))
@@ -1141,7 +1122,7 @@ Credits: |credits&gt;[$credits]
 		]
 		(replace: ?foci)[
 			(display: &quot;foci disp&quot;)
-		]
+		]]
 	]
 ](else:)[_foci]
 
@@ -1658,7 +1639,7 @@ Luck: (print: $save&#39;s Luck) (checkbox: bind $luck, &quot;Use Luck Save&quot;
 _att:
 
 (if: _edit)[
-(if: _atte&#39;s (_att)&#39;s score &gt; $att&#39;s (_att)&#39;s score)[
+(if: _atte&#39;s (_att)&#39;s score &lt; $att&#39;s (_att)&#39;s score)[
 	(link: &quot;-&quot;)[
 		(set: $att&#39;s (_att)&#39;s score to it - 1)
 		(set: $sp to it + $attUp)
@@ -1769,7 +1750,7 @@ _sk:
 ]}</tw-passagedata><tw-passagedata pid="46" name="psk" tags="" position="400,1675" size="100,100">&#39;&#39;Psychic&#39;&#39;
 &lt;div class=&quot;column&quot;&gt;(for: each _sk, ...(datanames: $psySkList))[{
 (if: 
-	$advPsy is _sk or
+	$advPsy contains _sk or
 	$class is &quot;Psychic&quot;
 )[
 _sk (if: $psySkList&#39;s (_sk)&#39;s fp &gt; 0)[(print: $psySkList&#39;s (_sk)&#39;s fp) bonus]:
@@ -1926,16 +1907,35 @@ _foci, lvl.(if: $foci contains (_foci + &quot;2&quot;))[2](else:)[1],
 	(set: $ammo&#39;s ($weapon&#39;s (_i)&#39;s name)&#39;s l to &quot;s&quot;)
 ]]
 
-(print: $weapon&#39;s (_i)&#39;s name),
+(print: $weapon&#39;s (_i)&#39;s name),(if: _wed is _i)[
+(link: &quot;-&quot;)[
+	(set: $weapon&#39;s (_i)&#39;s ab to it - 1)
+	(replace: ?weap)[(display: &quot;weap&quot;)]
+]]
 + (print: $bab +
 	$attMod&#39;s ($att&#39;s ($weapon&#39;s (_i)&#39;s att)&#39;s score) +
 	$weapon&#39;s (_i)&#39;s ab + _skillB
-),
+)(if: _wed is _i)[
+(link: &quot;+&quot;)[
+	(set: $weapon&#39;s (_i)&#39;s ab to it + 1)
+	(replace: ?weap)[(display: &quot;weap&quot;)]
+]
+],(if: _wed is _i)[
+	(link: &quot;-&quot;)[
+		(set: $weapon&#39;s (_i)&#39;s db to it - 1)
+		(replace: ?weap)[(display: &quot;weap&quot;)]
+	]
+]
 (print: $weapon&#39;s (_i)&#39;s dice) +
 (print: $weapon&#39;s (_i)&#39;s db +
 	$attMod&#39;s ($att&#39;s ($weapon&#39;s (_i)&#39;s att)&#39;s score) +
 	_fociBonus
-);
+)(if: _wed is _i)[
+	(link: &quot;+&quot;)[
+		(set: $weapon&#39;s (_i)&#39;s db to it + 1)
+		(replace: ?weap)[(display: &quot;weap&quot;)]
+	]
+];
 (if: (datanames: $weapon&#39;s (_i)) contains &quot;range&quot;)[
 range: (print: $weapon&#39;s (_i)&#39;s range)
 ](elseif: (datanames: $weapon&#39;s (_i)) contains &quot;sd&quot;)[
@@ -1950,9 +1950,23 @@ shock: (print:
 	]
 ]
 
+(if: _wed is _i)[
+	(link: &quot;/2&quot;)[
+		(set: $weapon&#39;s mag to it / 2)
+		(replace: ?weap)[(display: &quot;weap&quot;)]
+	]
+]
+
 (print: $weapon&#39;s (_i)&#39;s mag - $ammo&#39;s ($weapon&#39;s (_i)&#39;s name)&#39;s sf)
 /
 (print: $weapon&#39;s (_i)&#39;s mag)
+
+(if: _wed is _i)[
+	(link: &quot;x2&quot;)[
+		(set: $weapon&#39;s mag to it * 2)
+		(replace: ?weap)[(display: &quot;weap&quot;)]
+	]
+]
 
 (if: $ammo&#39;s ($weapon&#39;s (_i)&#39;s name)&#39;s sf is 0)[full mag
 ](elseif: $ammo&#39;s ($weapon&#39;s (_i)&#39;s name)&#39;s l is not &quot;o&quot;)[
@@ -1980,8 +1994,17 @@ shock: (print:
 		(replace: ?weap)[(display: &quot;weap&quot;)]
 		(replace: ?equip)[(display: &quot;equip&quot;)]
 	]
-](else:)[no ammo]
-
+](else:)[no ammo]]
+(if: _wed is _i)[
+	(link: &quot;done&quot;)[
+		(set: _wed to 0)
+		(replace: ?weap)[(display: &quot;weap&quot;)]
+	]
+](elseif: _wed is 0)[
+	(link: &quot;edit&quot;)[
+		(set: _wed to _i)
+		(replace: ?weap)[(display: &quot;weap&quot;)]
+	]
 ]}
 ]</tw-passagedata><tw-passagedata pid="49" name="arm" tags="" position="100,1800" size="100,100">&#39;&#39;Armour&#39;&#39;
 (for: each _i, ...(range: 1, $armour&#39;s length))[{
@@ -1991,9 +2014,23 @@ shock: (print:
 ]
 
 (print: $armour&#39;s (_i)&#39;s name),
+(if: _aed is _i)[
+	(link: &quot;-&quot;)[
+		(set: $armour&#39;s (_i)&#39;s ac to it - 1)
+		(replace: ?arm)[(display: &quot;arm&quot;)]
+	]
+]
 AC: (print: $armour&#39;s (_i)&#39;s ac + (max: 0,
-	$attMod&#39;s ($att&#39;s Dexterity&#39;s score)))(if: (datanames:$armour&#39;s (_i)) contains &quot;s&quot;)[/+1
+	$attMod&#39;s ($att&#39;s Dexterity&#39;s score)))(if: (datanames:$armour&#39;s (_i)) contains &quot;s&quot;)[/+1]
 
+(if: _aed is _i)[
+	(link: &quot;+&quot;)[
+		(set: $armour&#39;s (_i)&#39;s ac to it + 1)
+		(replace: ?arm)[(display: &quot;arm&quot;)]
+	]
+]
+
+(if: (datanames:$armour&#39;s (_i)) contains &quot;s&quot;)[
 (if: $sh is not $armour&#39;s (_i))[
 	(link: &quot;shield&quot;)[
 		(set: $sh to $armour&#39;s (_i))
@@ -2019,7 +2056,19 @@ AC: (print: $armour&#39;s (_i)&#39;s ac + (max: 0,
 		(replace: ?ac)[(print: $ac&#39;s arm + $ac&#39;s sh)]
 		(replace: ?arm)[(display: &quot;arm&quot;)]
 	]
-](else:)[equipped]}
+](else:)[equipped]
+
+(if: _aed is _i)[
+	(link: &quot;done&quot;)[
+		(set: _aed to 0)
+		(replace: ?arm)[(display: &quot;arm&quot;)]
+	]
+](elseif: _aed is 0)[
+	(link: &quot;edit&quot;)[
+		(set: _aed to _i)
+		(replace: ?arm)[(display: &quot;arm&quot;)]
+	]
+]}
 ]</tw-passagedata><tw-passagedata pid="50" name="equip" tags="" position="200,1800" size="100,100">&#39;&#39;Equipment&#39;&#39;
 &#39;&#39;Readied&#39;&#39;(set: $inv&#39;s re to 0)(set: $inv&#39;s rl to 0)
 (for: each _inv, ...(datanames: $inv&#39;s r))[{
@@ -2193,7 +2242,7 @@ _inv(if: (datanames:$inv&#39;s o&#39;s (_inv)) contains &quot;num&quot;)[ (print
 	(replace: ?equip)[(display: &quot;equip&quot;)]
 ]
 &lt;br&gt;]}]</tw-passagedata><tw-passagedata pid="51" name="effort" tags="" position="500,1675" size="100,100">Effort: {(print: 
-	1 + $maxPS + 
+	1 + $maxPS + $effort&#39;s B +
 	(max:
 		$attMod&#39;s ($att&#39;s Constitution&#39;s score),
 		$attMod&#39;s ($att&#39;s Wisdom&#39;s score)
@@ -2238,6 +2287,21 @@ Committed: {
 
 (link: &quot;+&quot;)[
 	(set: $effort&#39;s D to it + 1)
+	(replace: ?eff)[(display: &quot;effort&quot;)]
+]
+}
+Bonus: {
+(if: $effort&#39;s B &gt; 0)[
+	(link: &quot;-&quot;)[
+		(set: $effort&#39;s B to it - 1)
+		(replace: ?eff)[(display: &quot;effort&quot;)]
+	]
+]
+
+(print: $effort&#39;s B)
+
+(link: &quot;+&quot;)[
+	(set: $effort&#39;s B to it + 1)
 	(replace: ?eff)[(display: &quot;effort&quot;)]
 ]
 }</tw-passagedata><tw-passagedata pid="52" name="Add Weapon" tags="" position="0,1925" size="100,100">&#39;&#39;Buy Weapons&#39;&#39;
@@ -2681,170 +2745,53 @@ weight: (print: _eq&#39;s enc), TL: (print: _eq&#39;s tl)
 	&quot;c&quot;, _am&#39;s c
 	)))
 ]
-]}</tw-passagedata><tw-passagedata pid="63" name="class dis" tags="" position="125,925" size="100,100">{Expert
-(if: $class is not &quot;Expert&quot;)[
-	(link: &quot;Select&quot;)[
-		(set: $class to &quot;Expert&quot;)
-		(set: _classAr to (a:))
-		(set: _classAr to (a:
-			&quot;(set: $special to \&quot;Once per scene, you can reroll a failed skill check, taking the new roll if it’s better.\&quot;)&quot;,
-			&quot;(set: $skillP to it + 1)&quot;,
-			&quot;(set: $fociP to it + 1)&quot;
-		))
-		(set: $advPsy to &quot;none&quot;)
+]}</tw-passagedata><tw-passagedata pid="63" name="class dis" tags="" position="125,925" size="100,100">(for: each _cl, ...(datanames:$classList))[(if: _cl is not &quot;none&quot;)[{
+(if: not _done)[
+(link: _cl)[
+	(if: _classL contains _cl)[
+		(set: _classL to it - (a:_cl))
 		(replace: ?class)[(display: &quot;class dis&quot;)]
-	]
-](else:)[Selected]
-}
-
-{Psychic
-(if: $class is not &quot;Psychic&quot;)[
-	(link: &quot;Select&quot;)[
-		(set: $class to &quot;Psychic&quot;)
-		(set: _classAr to (a:))
-		(set: _classAr to (a:
-			&quot;(set: $special to \&quot;Unlike Warriors or Experts, you are capable of learning psychic disciplines and their associated techniques.\&quot;)&quot;,
-			&quot;(set: $psychic to true)&quot;,
-			&quot;(set: $psySP to 2)&quot;
-		))
-		(set: $advPsy to &quot;none&quot;)
-		(replace: ?class)[(display: &quot;class dis&quot;)]
-	]
-](else:)[Selected]
-}
-
-{Warrior
-(if: $class is not &quot;Warrior&quot;)[
-	(link: &quot;Select&quot;)[
-		(set: $class to &quot;Warrior&quot;)
-		(set: _classAr to (a:))
-		(set: _classAr to (a:
-			&quot;(set: $babM to 1)&quot;,
-			&quot;(set: $special to \&quot;Once per scene, as an Instant ability, you can either choose to negate a successful attack roll against you or turn a missed attack roll you made into a successful hit.\&quot;)&quot;,
-			&quot;(set: $hpB to it + 2)&quot;,
-			&quot;(set: $fociP to it + 1)&quot;
-		))
-		(set: $advPsy to &quot;none&quot;)
-		(replace: ?class)[(display: &quot;class dis&quot;)]
-	]
-](else:)[Selected]
-}
-
-{Adventurer
-(if: $class is not &quot;Adventurer&quot; and
-	$class does not contain &quot;/&quot; and
-	$class is not &quot;&quot;)[
-	(link: &quot;Select&quot;)[
-		(set: $class to &quot;Adventurer&quot;)
-		(set: _classAr to (a:))
-		(set: _ap to 2)
-		(replace: ?class)[(display: &quot;class dis&quot;)]
-	]
-](else:)[&lt;br&gt;
-(if: $class is &quot;Adventurer&quot;)[(set: $class to &quot;&quot;)]
-	Partial Expert - (if: $class does not contain &quot;Expert&quot; and
-		_ap is &gt; 0)[
-	(link: &quot;Select&quot;)[
-		(set: _classAr to it + (a:
-			&quot;(set: $skillP to it + 1)&quot;,
-			&quot;(set: $fociP to it + 1)&quot;
-		))
-		(set: $class to it + &quot;Expert&quot;)
-		(set: _ap to it - 1)
-		(if: $class does not contain &quot;/&quot;)[
-			(set: $class to it + &quot;/&quot;)
-		]
-		(replace: ?class)[(display: &quot;class dis&quot;)]
-	]](elseif: _ap is &lt; 1 and
-		$class does not contain &quot;Expert&quot;)[
-		Can only select 2
 	](else:)[
-	(link: &quot;Remove&quot;)[
-		(set: _classAr to it - (a:
-			&quot;(set: $skillP to it + 1)&quot;,
-			&quot;(set: $fociP to it + 1)&quot;
-		))
-		(set: $class to it - &quot;Expert&quot;)
-		(set: _ap to it + 1)
-		(if: $class is &quot;/&quot;)[
-			(set: $class to it - &quot;/&quot;)
-		]
+		(set: _classL to it + (a:_cl))
 		(replace: ?class)[(display: &quot;class dis&quot;)]
 	]
-	]
-	&lt;br&gt;
-	Partial Psychic - (if: $class does not contain &quot;Psychic&quot; and
-		_ap is &gt; 0)[
-		(link: &quot;Select&quot;)[
-			(set: $class to it + &quot;Psychic&quot;)
-			(set: _ap to it + 1)
-			(if: $class does not contain &quot;/&quot;)[
-				(set: $class to it + &quot;/&quot;)
-			]
-			(replace: ?class)[(display: &quot;class dis&quot;)]
-		]
-	](elseif: _ap is &lt; 1 and
-		$class does not contain &quot;Psychic&quot;)[
-		Can only select 2
+]](else:)[_cl](if: _classL contains _cl)[ Selected]
+}&lt;br&gt;]](if: _classL contains &quot;Adventurer&quot;)[
+
+&#39;&#39;Adventurer Classes&#39;&#39;
+(for: each _cl, ...(datanames:$advList))[{
+(if: not _done)[
+(link: _cl - &quot;adv&quot;)[
+	(if: _classL contains _cl)[
+		(set: _classL to it - (a:_cl))
+		(replace: ?class)[(display: &quot;class dis&quot;)]
 	](else:)[
-		(link: &quot;Remove&quot;)[
-			(set: $class to it - &quot;Psychic&quot;)
-			(if: $class is &quot;/&quot;)[
-				(set: $class to it - &quot;/&quot;)
-			]
-			(set: $advPsy to &quot;none&quot;)
-			(set: _ap to it + 1)
-			(replace: ?class)[(display: &quot;class dis&quot;)]
-		]
-		&lt;br&gt;
-		(for: each _ps, ...(datanames: $psySkList))[
-			_ps (if: $advPsy is not _ps)[
-				(link: &quot;Select&quot;)[
-					(set: $advPsy to _ps)
-					(replace: ?class)[(display: &quot;class dis&quot;)]
-				]](else:)[Selected]
-				&lt;br&gt;
-			](else:)[Selected]
-		]
-	&lt;br&gt;
-	Partial Warrior - (if: $class does not contain &quot;Warrior&quot; and
-		_ap is &gt; 0)[
-	(link: &quot;Select&quot;)[
-		(set: _classAr to it + (a:
-			&quot;(set: $fociP to it + 1)&quot;,
-			&quot;(set: $babB to (a:1,5))&quot;,
-			&quot;(set: $hpB to it + 2)&quot;
-		))
-		(set: $class to it + &quot;Warrior&quot;)
-		(set: _ap to it - 1)
-		(if: $class does not contain &quot;/&quot;)[
-			(set: $class to it + &quot;/&quot;)
-		]
+		(set: _classL to it + (a:_cl))
 		(replace: ?class)[(display: &quot;class dis&quot;)]
-	]](elseif: _ap is &lt; 1 and
-		$class does not contain &quot;Warrior&quot;)[
-		Can only select 2
+	]
+]](else:)[(print: _cl - &quot;adv&quot;)](if: _classL contains _cl)[ Selected]
+}
+]]
+
+&#39;&#39;Extra 1/2 Class&#39;&#39;
+(for: each _cl, ...(datanames:$advList))[{
+(if: not _done)[
+(link: _cl - &quot;adv&quot;)[
+(set: _cl to it + &quot;2&quot;)
+	(if: _classL contains _cl)[
+		(set: _classL to it - (a:_cl))
+		(replace: ?class)[(display: &quot;class dis&quot;)]
 	](else:)[
-	(link: &quot;Remove&quot;)[
-		(set: _classAr to it - (a:
-			&quot;(set: $fociP to it + 1)&quot;,
-			&quot;(set: $babB to (a:1,5))&quot;,
-			&quot;(set: $hpB to it + 2)&quot;
-		))
-		(set: $class to it - &quot;Warrior&quot;)
-		(set: _ap to it + 1)
-		(if: $class is &quot;/&quot;)[
-			(set: $class to it - &quot;/&quot;)
-		]
+		(set: _classL to it + (a:_cl))
 		(replace: ?class)[(display: &quot;class dis&quot;)]
 	]
-	]
-]
-}</tw-passagedata><tw-passagedata pid="64" name="foci pt" tags="" position="675,1050" size="100,100">(if: $foci contains &quot;Wild Psychic Talent&quot;)[&#39;&#39;Wild Psychic Talent&#39;&#39;](else:)[&#39;&#39;Psychic Training&#39;&#39;]
+]](else:)[(print: _cl - &quot;adv&quot;)](if: _classL contains _cl + &quot;2&quot;)[ Selected]
+}
+]</tw-passagedata><tw-passagedata pid="64" name="foci pt" tags="" position="675,1050" size="100,100">(if: $foci contains &quot;Wild Psychic Talent&quot;)[&#39;&#39;Wild Psychic Talent&#39;&#39;](else:)[&#39;&#39;Psychic Training&#39;&#39;]
 (for: each _ps, ...(datanames: $psySkList))[{
 (if:
-	$advPsy is _ps or
-	$class is &quot;Psychic&quot; or
+	$advPsy contains _ps or
+	$psychic or
 	$foci contains &quot;Wild Psychic Talent&quot;
 )[
 (if: $psyTr is not _ps)[
@@ -2912,6 +2859,33 @@ Committed: {
 	(set: $effort&#39;s D to it + 1)
 	(replace: ?wpt)[(display: &quot;wpt&quot;)]
 ]
+}</tw-passagedata><tw-passagedata pid="66" name="foci spec" tags="" position="800,1050" size="100,100">&#39;&#39;Specialist Skill&#39;&#39;
+{
+(for: each _sk, ...(datanames: $skList))[
+(if: $skList&#39;s (_sk)&#39;s combat is false)[
+	_sk
+	(if: _spec is _sk)[picked
+	](else:)[
+	(link: &quot;pick&quot;)[
+		(set: _spec to _sk)
+		(replace: ?spec)[(display: &quot;foci spec&quot;)]
+	]]
+	
+&lt;br&gt;]]
+}</tw-passagedata><tw-passagedata pid="67" name="class init" tags="" position="375,925" size="100,100">{
+(set: $classList to (dm:
+	&quot;none&quot;, &quot;&quot;,
+	&quot;Warrior&quot;, &quot;(set: $babM to 1)(set: $special to \&quot;Once per scene, as an Instant ability, you can either choose to negate a successful attack roll against you or turn a missed attack roll you made into a successful hit.\&quot;)(set: $hpB to it + 2)(set: $fociP to it + 1)&quot;,
+	&quot;Expert&quot;, &quot;(set: $special to it + \&quot;Once per scene, you can reroll a failed skill check, taking the new roll if it’s better.\&quot;)(set: $skillP to it + 1)(set: $fociP to it + 1)&quot;,
+	&quot;Psychic&quot;, &quot;(set: $special to it + \&quot;Unlike Warriors or Experts, you are capable of learning psychic disciplines and their associated techniques.\&quot;)(set: $psychic to true)(set: $psySP to 2)&quot;,
+	&quot;Adventurer&quot;, &quot;&quot;
+))
+
+(set: $advList to (dm:
+	&quot;advWarrior&quot;, &quot;(set: $fociP to it + 1)(set: $babB to (a:1,5))(set: $hpB to it + 2)&quot;,
+	&quot;advExpert&quot;, &quot;(set: $skillP to it + 1)(set: $fociP to it + 1)&quot;,
+	&quot;advPsychic&quot;, &quot;(set: _advPsy to it + 1)&quot;
+))
 }</tw-passagedata></tw-storydata>
 <script title="Twine engine code" data-main="harlowe">"use strict";var _slicedToArray=function(){return function(e,t){if(Array.isArray(e))return e;if(Symbol.iterator in Object(e))return function(e,t){var n=[],r=!0,i=!1,a=void 0;try{for(var o,s=e[Symbol.iterator]();!(r=(o=s.next()).done)&&(n.push(o.value),!t||n.length!==t);r=!0);}catch(e){i=!0,a=e}finally{try{!r&&s.return&&s.return()}finally{if(i)throw a}}return n}(e,t);throw new TypeError("Invalid attempt to destructure non-iterable instance")}}(),_typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};function _defineProperty(e,t,n){return t in e?Object.defineProperty(e,t,{value:n,enumerable:!0,configurable:!0,writable:!0}):e[t]=n,e}function _toConsumableArray(e){if(Array.isArray(e)){for(var t=0,n=Array(e.length);t<e.length;t++)n[t]=e[t];return n}return Array.from(e)}!function(){
 /**
