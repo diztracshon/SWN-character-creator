@@ -671,7 +671,7 @@ _sk(if: $skList&#39;s (_sk)&#39;s score &gt;= 1)[(max)]: (print: $skList&#39;s (
 	(link: &quot;+Any&quot;)[
 		(set: $anyS to it - 1)
 		(if: $level &gt; 1)[
-			(set: $skList&#39;s (_sk)&#39;s fb to it + 3)
+			(set: $skList&#39;s (_sk)&#39;s fp to it + 3)
 		](else:)[
 			(set: $skList&#39;s (_sk)&#39;s score to it + 1)
 		]
@@ -684,7 +684,7 @@ _sk(if: $skList&#39;s (_sk)&#39;s score &gt;= 1)[(max)]: (print: $skList&#39;s (
 	(link: &quot;-Any&quot;)[
 		(set: $anyS to it + 1)
 		(if: $level &gt; 1)[
-			(set: $skList&#39;s (_sk)&#39;s fb to it - 3)
+			(set: $skList&#39;s (_sk)&#39;s fp to it - 3)
 		](else:)[
 			(set: $skList&#39;s (_sk)&#39;s score to it - 1)
 		]
@@ -699,7 +699,7 @@ _sk(if: $skList&#39;s (_sk)&#39;s score &gt;= 1)[(max)]: (print: $skList&#39;s (
 	(link: &quot;+Comb&quot;)[
 		(set: $anyC to it - 1)
 		(if: $level &gt; 1)[
-			(set: $skList&#39;s (_sk)&#39;s fb to it + 3)
+			(set: $skList&#39;s (_sk)&#39;s fp to it + 3)
 		](else:)[
 			(set: $skList&#39;s (_sk)&#39;s score to it + 1)
 		]
@@ -712,7 +712,7 @@ _sk(if: $skList&#39;s (_sk)&#39;s score &gt;= 1)[(max)]: (print: $skList&#39;s (
 	(link: &quot;-Comb&quot;)[
 		(set: $anyC to it + 1)
 		(if: $level &gt; 1)[
-			(set: $skList&#39;s (_sk)&#39;s fb to it - 3)
+			(set: $skList&#39;s (_sk)&#39;s fp to it - 3)
 		](else:)[
 			(set: $skList&#39;s (_sk)&#39;s score to it - 1)
 		]
@@ -727,7 +727,7 @@ _sk(if: $skList&#39;s (_sk)&#39;s score &gt;= 1)[(max)]: (print: $skList&#39;s (
 	(link: &quot;+Or&quot;)[
 		(set: $or to (a:))
 		(if: $level &gt; 1)[
-			(set: $skList&#39;s (_sk)&#39;s fb to it + 3)
+			(set: $skList&#39;s (_sk)&#39;s fp to it + 3)
 		](else:)[
 			(set: $skList&#39;s (_sk)&#39;s score to it + 1)
 		]
@@ -740,7 +740,7 @@ _sk(if: $skList&#39;s (_sk)&#39;s score &gt;= 1)[(max)]: (print: $skList&#39;s (
 	(link: &quot;-Or&quot;)[
 		(set: $or to _or)
 		(if: $level &gt; 1)[
-			(set: $skList&#39;s (_sk)&#39;s fb to it - 3)
+			(set: $skList&#39;s (_sk)&#39;s fp to it - 3)
 		](else:)[
 			(set: $skList&#39;s (_sk)&#39;s score to it - 1)
 		]
@@ -1704,9 +1704,9 @@ _sk:
 (if: _edit)[
 (if: _ske&#39;s (_sk)&#39;s score &lt; $skList&#39;s (_sk)&#39;s score)[
 	(link: &quot;-&quot;)[
+		(set: $skList&#39;s (_sk)&#39;s score to it - 1)
 		(set: $sp to it + (max: 0,
 			$skList&#39;s (_sk)&#39;s score + 2 - $skList&#39;s (_sk)&#39;s fp))
-		(set: $skList&#39;s (_sk)&#39;s score to it - 1)
 		(set: $skList&#39;s (_sk)&#39;s fp to _ske&#39;s (_sk)&#39;s fp)
 		(replace: ?skills)[(display: &quot;sk&quot;)]
 	]
@@ -1751,15 +1751,15 @@ _sk:
 &lt;div class=&quot;column&quot;&gt;(for: each _sk, ...(datanames: $psySkList))[{
 (if: 
 	$advPsy contains _sk or
-	$class is &quot;Psychic&quot;
+	$psychic
 )[
 _sk (if: $psySkList&#39;s (_sk)&#39;s fp &gt; 0)[(print: $psySkList&#39;s (_sk)&#39;s fp) bonus]:
 (if: _edit)[
 (if: _pske&#39;s (_sk)&#39;s score &lt; $psySkList&#39;s (_sk)&#39;s score)[
 	(link: &quot;-&quot;)[
+		(set: $psySkList&#39;s (_sk)&#39;s score to it - 1)
 		(set: $sp to it + (max: 0,
 			$psySkList&#39;s (_sk)&#39;s score + 2 - $psySkList&#39;s (_sk)&#39;s fp))
-		(set: $psySkList&#39;s (_sk)&#39;s score to it - 1)
 		(set: $psySkList&#39;s (_sk)&#39;s fp to _pske&#39;s (_sk)&#39;s fp)
 		(replace: ?tech)[(display: &quot;psk&quot;)]
 	]
@@ -1770,12 +1770,12 @@ _sk (if: $psySkList&#39;s (_sk)&#39;s fp &gt; 0)[(print: $psySkList&#39;s (_sk)&
 (if: _edit)[
 (if: $sp &gt; $psySkList&#39;s (_sk)&#39;s score + 1)[
 	(link: &quot;+&quot;)[
-		(set: $psySkList&#39;s (_sk)&#39;s score to it + 1)
 		(set: $sp to it - (max: 0,
 			$psySkList&#39;s (_sk)&#39;s score + 2 - $psySkList&#39;s (_sk)&#39;s fp))
 		(set: $psySkList&#39;s (_sk)&#39;s fp to it - (min:
 			$psySkList&#39;s (_sk)&#39;s fp,
-			$psySkList&#39;s (_sk)&#39;s score + 2 - $psySkList&#39;s (_sk)&#39;s fp))
+			$psySkList&#39;s (_sk)&#39;s score + 2))
+		(set: $psySkList&#39;s (_sk)&#39;s score to it + 1)
 		(replace: ?tech)[(display: &quot;psk&quot;)]
 	]
 ](else:)[+]]
