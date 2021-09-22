@@ -137,6 +137,8 @@ tw-sidebar {
 		$special to &quot;&quot;,
 		$skillP to 3,
 		$hpB to 0,
+		$strain to 0,
+		$pStrain to 0,
 		$bab to 0,
 		$babM to 2,
 		$class to &quot;&quot;,
@@ -845,7 +847,11 @@ _sk(if: $skList&#39;s (_sk)&#39;s score &gt;= 1)[(max)]: (print: $skList&#39;s (
 				(set: $anyC to it + 1)
 			](else:)[
 				(if: $level &lt; 2)[
+					(if: $skList&#39;s (_temp2&#39;s 1st)&#39;s score is &gt; 0)[
+					(set: $anyS to it + 1)
+					](else:)[
 					(set: $skList&#39;s (_temp2&#39;s 1st)&#39;s score to it + 1)
+					]
 				](else:)[
 					(set: $skList&#39;s (_temp2&#39;s 1st)&#39;s fp to it + 3)
 				]
@@ -1014,7 +1020,9 @@ Wild talents are not treated as psychics for general purposes and cannot “torc
 	]
 ]
 ]}</tw-passagedata><tw-passagedata pid="28" name="Statblock" tags="" position="0,1550" size="100,100">{
-
+	(set: $bab to (floor: $level / $babM))
+	(if: $level &gt; $babB&#39;s 1st)[(set: $bab to it + 1)]
+	(if: $level &gt; $babB&#39;s 2nd)[(set: $bab to it + 1)]
 }&#39;&#39;Statblock&#39;&#39;(set: _edit to false)(set: _ske to (dm:))(set: _pske to (dm:))(set: _atte to (dm:))(set: _wed to 0)(set: _aed to 0)
 
 Name: |name&gt;[$name] {(link: &quot;Edit&quot;)[(replace: ?name)[
@@ -1625,8 +1633,6 @@ Luck: (print: $save&#39;s Luck) (checkbox: bind $luck, &quot;Use Luck Save&quot;
 		(if: $psyTr is not &quot;none&quot; and
 			$foci contains &quot;Psychic Training2&quot;)[
 		(set: $psySkList&#39;s ($psyTr)&#39;s fp to it + 1)]
-		(set: $bab to (floor: $level / 2))
-		(if: $babB contains $level)[(set: $bab to it + 1)]
 		(if: $fociLvl contains $level)[(set: $fociP to it + 1)]
 		
 		(goto: &quot;Statblock&quot;)
@@ -1698,7 +1704,29 @@ $mhp
 	(set: $mhp to it + 1)
 	(replace: ?hp)[(display: &quot;hp&quot;)]
 ]
-}</tw-passagedata><tw-passagedata pid="45" name="sk" tags="" position="300,1675" size="100,100">&#39;&#39;Skill List&#39;&#39;(replace: ?sp)[$sp]
+}, Strain: {
+(link: &quot;-p&quot;)[
+	(set: $pStrain to it - 1)
+	(replace: ?hp)[(display: &quot;hp&quot;)]
+]
+
+(link: &quot;-&quot;)[
+	(set: $strain to it - 1)
+	(replace: ?hp)[(display: &quot;hp&quot;)]
+]
+
+(print: $strain + $pStrain)
+
+(link: &quot;+&quot;)[
+	(set: $strain to it + 1)
+	(replace: ?hp)[(display: &quot;hp&quot;)]
+]
+
+(link: &quot;+p&quot;)[
+	(set: $pStrain to it + 1)
+	(replace: ?hp)[(display: &quot;hp&quot;)]
+]
+} / (print: $att&#39;s Constitution&#39;s score) </tw-passagedata><tw-passagedata pid="45" name="sk" tags="" position="300,1675" size="100,100">&#39;&#39;Skill List&#39;&#39;(replace: ?sp)[$sp]
 &lt;div class=&quot;column&quot;&gt;(for: each _sk, ...(datanames: $skList))[{
 _sk:
 (if: _edit)[
