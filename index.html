@@ -1021,8 +1021,10 @@ Wild talents are not treated as psychics for general purposes and cannot “torc
 ]
 ]}</tw-passagedata><tw-passagedata pid="28" name="Statblock" tags="" position="0,1550" size="100,100">{
 	(set: $bab to (floor: $level / $babM))
-	(if: $level &gt; $babB&#39;s 1st)[(set: $bab to it + 1)]
-	(if: $level &gt; $babB&#39;s 2nd)[(set: $bab to it + 1)]
+	(if: $babB&#39;s length&gt; 1)[
+		(if: $level &gt; $babB&#39;s 1st)[(set: $bab to it + 1)]
+		(if: $level &gt; $babB&#39;s 2nd)[(set: $bab to it + 1)]
+	]
 }&#39;&#39;Statblock&#39;&#39;(set: _edit to false)(set: _ske to (dm:))(set: _pske to (dm:))(set: _atte to (dm:))(set: _wed to 0)(set: _aed to 0)
 
 Name: |name&gt;[$name] {(link: &quot;Edit&quot;)[(replace: ?name)[
