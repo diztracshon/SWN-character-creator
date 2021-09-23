@@ -873,7 +873,8 @@ _sk(if: $skList&#39;s (_sk)&#39;s score &gt;= 1)[(max)]: (print: $skList&#39;s (
 	](elseif: $foci contains &quot;Wild Psychic Talent2&quot; and
 		_listF does not contain &quot;Wild Psychic Talent2&quot;)[
 		(set: $fTech ($psyTr) to it + 1)
-	](elseif: $anyC &gt; 0 or $or is not (a:))[&lt;!-- skills p2 --&gt;
+	](elseif: $anyC &gt; 0 or $or is not (a:) or $anyS &gt; 0)[
+	&lt;!-- skills p2 --&gt;
 	|skill&gt;[(link: &quot;Resolve Skils&quot;)[
 		(replace: ?skill)[(display: &quot;skill dis&quot;)]
 	]]
@@ -1683,22 +1684,25 @@ _att:
 		(replace: ?att)[(display: &quot;att&quot;)]
 	]
 ]}</tw-passagedata><tw-passagedata pid="44" name="hp" tags="" position="100,1675" size="100,100">HP: {
+(if: $hp &gt; 0)[
 (link: &quot;-&quot;)[
 	(set: $hp to it - 1)
 	(replace: ?hp)[(display: &quot;hp&quot;)]
-]
+]](else:)[-]
 
 $hp
 
+(if: $hp &lt; $mhp)[
 (link: &quot;+&quot;)[
 	(set: $hp to it + 1)
 	(replace: ?hp)[(display: &quot;hp&quot;)]
-]
+]](else:)[+]
 } / {
+(if: $mhp &gt; 1)[
 (link: &quot;-&quot;)[
 	(set: $mhp to it - 1)
 	(replace: ?hp)[(display: &quot;hp&quot;)]
-]
+]](else:)[-]
 
 $mhp
 
@@ -1707,27 +1711,31 @@ $mhp
 	(replace: ?hp)[(display: &quot;hp&quot;)]
 ]
 }, Strain: {
+(if: $pStrain &gt; 0)[
 (link: &quot;-p&quot;)[
 	(set: $pStrain to it - 1)
 	(replace: ?hp)[(display: &quot;hp&quot;)]
-]
+]](else:)[-p]
 
+(if: $strain &gt; 0)[
 (link: &quot;-&quot;)[
 	(set: $strain to it - 1)
 	(replace: ?hp)[(display: &quot;hp&quot;)]
-]
+]](else:)[-]
 
 (print: $strain + $pStrain)
 
+(if: $strain + $pStrain &lt; $att&#39;s SConstitution&#39;s score)[
 (link: &quot;+&quot;)[
 	(set: $strain to it + 1)
 	(replace: ?hp)[(display: &quot;hp&quot;)]
-]
+]](else:)[+]
 
+(if: $strain + $pStrain &lt; $att&#39;s SConstitution&#39;s score)[
 (link: &quot;+p&quot;)[
 	(set: $pStrain to it + 1)
 	(replace: ?hp)[(display: &quot;hp&quot;)]
-]
+]](else:)[+p]
 } / (print: $att&#39;s Constitution&#39;s score) </tw-passagedata><tw-passagedata pid="45" name="sk" tags="" position="300,1675" size="100,100">&#39;&#39;Skill List&#39;&#39;(replace: ?sp)[$sp]
 &lt;div class=&quot;column&quot;&gt;(for: each _sk, ...(datanames: $skList))[{
 _sk:
