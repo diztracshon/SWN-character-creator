@@ -1645,7 +1645,7 @@ Luck: (print: $save&#39;s Luck) (checkbox: bind $luck, &quot;Use Luck Save&quot;
 	]
 ]
 }, BAB: $bab</tw-passagedata><tw-passagedata pid="43" name="att" tags="" position="200,1675" size="100,100">(replace: ?sp)[$sp]&lt;div class=&quot;column&quot;&gt;(for: each _att, ...(datanames: $att))[{
-_att:
+(print: _att&#39;s 1stto3rd):
 
 (if: _edit)[
 (if: _atte&#39;s (_att)&#39;s score &lt; $att&#39;s (_att)&#39;s score)[
@@ -1725,13 +1725,13 @@ $mhp
 
 (print: $strain + $pStrain)
 
-(if: $strain + $pStrain &lt; $att&#39;s SConstitution&#39;s score)[
+(if: $strain + $pStrain &lt; $att&#39;s Constitution&#39;s score)[
 (link: &quot;+&quot;)[
 	(set: $strain to it + 1)
 	(replace: ?hp)[(display: &quot;hp&quot;)]
 ]](else:)[+]
 
-(if: $strain + $pStrain &lt; $att&#39;s SConstitution&#39;s score)[
+(if: $strain + $pStrain &lt; $att&#39;s Constitution&#39;s score)[
 (link: &quot;+p&quot;)[
 	(set: $pStrain to it + 1)
 	(replace: ?hp)[(display: &quot;hp&quot;)]
@@ -1786,7 +1786,7 @@ _sk:
 		(replace: ?skills)[(display: &quot;sk&quot;)]
 	]
 ]}</tw-passagedata><tw-passagedata pid="46" name="psk" tags="" position="400,1675" size="100,100">&#39;&#39;Psychic&#39;&#39;(replace: ?sp)[$sp]
-&lt;div class=&quot;column&quot;&gt;(for: each _sk, ...(datanames: $psySkList))[{
+(for: each _sk, ...(datanames: $psySkList))[{
 (if: 
 	$advPsy contains _sk or
 	$psychic
@@ -1848,7 +1848,7 @@ _tech, lvl.(print: $psyTech&#39;s (_sk)&#39;s (_tech)&#39;s level)
 &lt;br&gt;
 ]
 
-}]&lt;/div&gt;
+}]
 {(if: _edit)[
 	(link: &quot;Done&quot;)[
 		(set: _edit to false)
@@ -2715,7 +2715,7 @@ weight: (print: _eq&#39;s enc), TL: (print: _eq&#39;s tl)
 (set: $hwList to (a:
 	(dm: &quot;name&quot;, &quot;Heavy Machine Gun&quot;, &quot;dice&quot;, &quot;3d6#&quot;, &quot;db&quot;, 0, &quot;range&quot;, &quot;500/2,000&quot;, &quot;mag&quot;, 10, &quot;att&quot;, &quot;Dexterity&quot;, &quot;enc&quot;, 3, &quot;tl&quot;, 3, &quot;ab&quot;, 0, &quot;ammo&quot;, &quot;Bullets&quot;),
 	(dm: &quot;name&quot;, &quot;Rocket Launcher&quot;, &quot;dice&quot;, &quot;3d10&quot;, &quot;db&quot;, 0, &quot;range&quot;, &quot;2,000/4,000&quot;, &quot;mag&quot;, 1, &quot;att&quot;, &quot;Dexterity&quot;, &quot;enc&quot;, 2, &quot;tl&quot;, 3, &quot;ab&quot;, 0, &quot;ammo&quot;, &quot;Missile&quot;),
-	(dm: &quot;name&quot;, &quot;Demo Charge&quot;, &quot;dice&quot;, &quot;3d10&quot;, &quot;db&quot;, 0, &quot;range&quot;, &quot;20/40&quot;, &quot;mag&quot;, 1, &quot;att&quot;, 0, &quot;enc&quot;, 1, &quot;tl&quot;, 3, &quot;ab&quot;, 0,, &quot;ammo&quot;, &quot;Demo Charge&quot;),
+	(dm: &quot;name&quot;, &quot;Demo Charge&quot;, &quot;dice&quot;, &quot;3d10&quot;, &quot;db&quot;, 0, &quot;range&quot;, &quot;20/40&quot;, &quot;mag&quot;, 1, &quot;att&quot;, 0, &quot;enc&quot;, 1, &quot;tl&quot;, 3, &quot;ab&quot;, 0, &quot;ammo&quot;, &quot;Demo Charge&quot;),
 	(dm: &quot;name&quot;, &quot;Railgun&quot;, &quot;dice&quot;, &quot;3d8#&quot;, &quot;db&quot;, 0, &quot;range&quot;, &quot;4,000/8,000&quot;, &quot;mag&quot;, 20, &quot;att&quot;, &quot;Dexterity&quot;, &quot;enc&quot;, &quot;*&quot;, &quot;tl&quot;, 4, &quot;ab&quot;, 0, &quot;ammo&quot;, &quot;Railgun Bullet&quot;),
 	(dm: &quot;name&quot;, &quot;Anti-Vehicle Laser&quot;, &quot;dice&quot;, &quot;3d10&quot;, &quot;db&quot;, 0, &quot;range&quot;, &quot;2,000/4,000&quot;, &quot;mag&quot;, 15, &quot;att&quot;, &quot;Dexterity&quot;, &quot;enc&quot;, &quot;*&quot;, &quot;tl&quot;, 4, &quot;ab&quot;, 0, &quot;ammo&quot;, &quot;Power Cell, Type B&quot;),
 	(dm: &quot;name&quot;, &quot;Hydra Array&quot;, &quot;dice&quot;, &quot;3d6#&quot;, &quot;db&quot;, 0, &quot;range&quot;, &quot;4,000/8,000&quot;, &quot;mag&quot;, 10, &quot;att&quot;, &quot;Dexterity&quot;, &quot;enc&quot;, &quot;*&quot;, &quot;tl&quot;, 4, &quot;ab&quot;, 0, &quot;ammo&quot;, &quot;Hydra Volley&quot;),
