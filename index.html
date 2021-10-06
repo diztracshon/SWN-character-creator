@@ -1753,7 +1753,7 @@ _sk:
 (print: $skList&#39;s (_sk)&#39;s score)
 
 (if: _edit)[
-(if: $sp &gt; $skList&#39;s (_sk)&#39;s score + 2 - $skList&#39;s (_sk)&#39;s fp)[
+(if: $sp &gt;= $skList&#39;s (_sk)&#39;s score + 2 - $skList&#39;s (_sk)&#39;s fp)[
 	(link: &quot;+&quot;)[
 		(set: $sp to it - (max: 0,
 			$skList&#39;s (_sk)&#39;s score + 2 - $skList&#39;s (_sk)&#39;s fp))
