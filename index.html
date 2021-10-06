@@ -1090,7 +1090,7 @@ Credits: |credits&gt;[$credits]
 |equip&gt;[(display: &quot;equip&quot;)]
 [[Add Equipment]]
 
-{(link: &quot;Save&quot;)[
+{(link-rerun: &quot;Save&quot;)[
 	(if: (save-game: $name))[
 		Game saved.
 	](else:)[
@@ -1921,17 +1921,26 @@ _foci, lvl.(if: $foci contains (_foci + &quot;2&quot;))[2](else:)[1],
 (set: _skillB to 0, _fociBonus to 0)
 (if: $rwList contains $weapon&#39;s (_i) or
 	$hwList contains $weapon&#39;s (_i))[
-	(set: _skillB to $skList&#39;s Shoot&#39;s score)
+	(if: $skList&#39;s Shoot&#39;s score is -1)[
+		(set: _skillB to -2)
+	](else:)[
+	(set: _skillB to $skList&#39;s Shoot&#39;s score)]
 	(if: $foci contains &quot;Gunslinger&quot;)[
 		(set: _fociBonus to _skillB)
 	]
 ](elseif: $mwList contains $weapon&#39;s (_i))[
-	(set: _skillB to $skList&#39;s Stab&#39;s score)
+	(if: $skList&#39;s Stab&#39;s score is -1)[
+		(set: _skillB to -2)
+	](else:)[
+	(set: _skillB to $skList&#39;s Stab&#39;s score)]
 	(if: $foci contains &quot;Armsman&quot;)[
 		(set: _fociBonus to _skillB)
 	]
 ](elseif: $weapon&#39;s (_i)&#39;s name is &quot;Unarmed&quot;)[
-	(set: _skillB to $skList&#39;s Punch&#39;s score)
+	(if: $skList&#39;s Puch&#39;s score is -1)[
+		(set: _skillB to -2)
+	](else:)[
+	(set: _skillB to $skList&#39;s Punch&#39;s score)]
 ]
 
 (if: (datanames: $weapon&#39;s (_i)) contains &quot;ammo&quot;)[
