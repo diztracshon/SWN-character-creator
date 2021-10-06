@@ -110,7 +110,8 @@ Morale: {
 |skill&gt;[(display: &quot;skill&quot;)]
 
 Psychic (checkbox: bind $psychic, &quot;&quot;)
-(event: when $psychic)[|psysk&gt;[(display: &quot;psyskill&quot;)]]
+(event: when $psychic)[|eff&gt;[(display: &quot;effort&quot;)]
+|psysk&gt;[(display: &quot;psyskill&quot;)]]
 
 (link-reveal: &quot;Foci&quot;)[:
 |foci&gt;[(display: &quot;focid&quot;)]]
@@ -129,7 +130,8 @@ Psychic (checkbox: bind $psychic, &quot;&quot;)
 		&quot;skill&quot;, $skList,
 		&quot;psychic&quot;, $psychic,
 		&quot;psySk&quot;, $psySkList,
-		&quot;foci&quot;, $foci
+		&quot;foci&quot;, $foci,
+		&quot;eff&quot;, $eff
 	))
 	(set: $char&#39;s a to it + (a: _tempC))
 	
@@ -676,21 +678,18 @@ $damB
 ](else:)[5]
 }</tw-passagedata><tw-passagedata pid="23" name="att" tags="" position="225,150" size="100,100">&lt;div class=&quot;column&quot;&gt;(for: each _i, ...(range: 1, $att&#39;s length))[{
 (print: $att&#39;s (_i)&#39;s name):
-(if: $att&#39;s (_i)&#39;s score &gt; -2)[
-	(link: &quot;-&quot;)[
-		(set: $att&#39;s (_i)&#39;s score to it - 1)
-		(replace: ?att)[(display: &quot;att&quot;)]
-	]
-](else:)[-]
+(link: &quot;-&quot;)[
+	(set: $att&#39;s (_i)&#39;s score to it - 1)
+	(replace: ?att)[(display: &quot;att&quot;)]
+]
 
 (print: $att&#39;s (_i)&#39;s score)
 
-(if: $att&#39;s (_i)&#39;s score &lt; 2)[
-	(link: &quot;+&quot;)[
-		(set: $att&#39;s (_i)&#39;s score to it + 1)
-		(replace: ?att)[(display: &quot;att&quot;)]
-	]
-](else:)[+]
+(link: &quot;+&quot;)[
+	(set: $att&#39;s (_i)&#39;s score to it + 1)
+	(replace: ?att)[(display: &quot;att&quot;)]
+]
+
 }
 ]&lt;/div&gt;</tw-passagedata><tw-passagedata pid="24" name="arm2" tags="" position="625,950" size="100,100">&#39;&#39;Armour&#39;&#39;
 (for: each _arm, ...$armour)[{
@@ -793,8 +792,7 @@ dam: (print: $wList&#39;s (_i)&#39;s dice)
 	]
 ](else:)[+]
 }
-]&lt;/div&gt;</tw-passagedata><tw-passagedata pid="27" name="psyskill" tags="" position="775,150" size="100,100">Effort: (print: (ceil: $hd / 3))
-&lt;div class=&quot;column&quot;&gt;(for: each _i, ...(range: 1, $psySkList&#39;s length))[{
+]&lt;/div&gt;</tw-passagedata><tw-passagedata pid="27" name="psyskill" tags="" position="775,150" size="100,100">&lt;div class=&quot;column&quot;&gt;(for: each _i, ...(range: 1, $psySkList&#39;s length))[{
 (print: $psySkList&#39;s (_i)&#39;s name)
 (if: $psySkList&#39;s (_i)&#39;s score &gt; -1)[
 	(link: &quot;-&quot;)[
@@ -858,7 +856,7 @@ _f (if: $foci contains _f + &quot;2&quot;)[lvl.2
 ]&lt;/div&gt;
 ]</tw-passagedata><tw-passagedata pid="29" name="Statblock" tags="" position="0,300" size="100,100">(set: $ist to &quot;&quot;)&#39;&#39;Active&#39;&#39;
 (for: each _c, ...$char&#39;s a)[(print: _c&#39;s name), HD (print: _c&#39;s hd)
-HP: (print: _c&#39;s hp), Saves: (print: 15 - _c&#39;s hd)
+HP: (print: _c&#39;s hp), Saves: (print: 15 - _c&#39;s hd)(if: (datanames: _c) does not contain &quot;eff&quot;)[(set: _c to it + (dm: &quot;eff&quot;, 0))]
 
 &#39;&#39;Armour&#39;&#39;
 (for: each _a, ..._c&#39;s arm)[(print: $armList&#39;s (_a)&#39;s name), ac: (print: $armList&#39;s (_a)&#39;s ac + $att&#39;s 2nd&#39;s score)(if: (datanames: $armList&#39;s (_a)) contains &quot;s&quot;)[/+1]
@@ -880,7 +878,7 @@ dam: (print: $wList&#39;s (_w)&#39;s dice)
 &lt;div class=&quot;column&quot;&gt;(for: each _sk, ..._c&#39;s skill)[(if: _sk&#39;s score &gt; -1 or $dSkill)[(print: _sk&#39;s name): (print: _sk&#39;s score)
 ]]&lt;/div&gt;(if: _c&#39;s psychic)[
 &#39;&#39;Psychic Stuff&#39;&#39;
-Effort: (ceil: _c&#39;s hd / 3)
+Effort: (print: (ceil: _c&#39;s hd / 3) + _c&#39;s eff)
 &lt;div class=&quot;column&quot;&gt;(for: each _sk, ..._c&#39;s psySk)[{
 (if: _sk&#39;s score &gt; -1 or $dSkill or
 	_sk&#39;s tech&#39;s length &gt; 0)[
@@ -1008,6 +1006,7 @@ ac: (print: $armList&#39;s (_arm)&#39;s ac + $att&#39;s 2nd&#39;s score)(if: (da
 	$foci to (a:),
 	$dSkill to false,
 	$psychic to false,
+	$eff to 0
 )
 
 (set: $att to (a:
@@ -1072,6 +1071,7 @@ ac: (print: $armList&#39;s (_arm)&#39;s ac + $att&#39;s 2nd&#39;s score)(if: (da
 (set: _exStr to it + (str:_c&#39;s foci))
 ](else:)[
 (set: _exStr to it + &quot;0&quot;)]
+(set: _exStr to it + &quot;|&quot; + (str: _c&#39;s eff))
 _exStr}</tw-passagedata><tw-passagedata pid="33" name="edit" tags="" position="125,300" size="100,100">{(set:
 	$name to _c&#39;s name,
 	$hd to _c&#39;s hd,
@@ -1126,6 +1126,10 @@ _exStr}</tw-passagedata><tw-passagedata pid="33" name="edit" tags="" position="1
 (set: _foci to (a:))
 (if: _inArr&#39;s 14th is not &quot;0&quot;)[
 (set: _foci to (split: (p: &quot;,&quot;), _inArr&#39;s 14th))]
+(set: _eff to 0)
+(if: _inArr&#39;s length &gt; 14)[
+(set: _eff to (num: _inArr&#39;s 15th))
+]
 
 (set: _tempC to (dm:
 	&quot;name&quot;, _inArr&#39;s 1st,
@@ -1140,11 +1144,24 @@ _exStr}</tw-passagedata><tw-passagedata pid="33" name="edit" tags="" position="1
 	&quot;skill&quot;, _sk,
 	&quot;psychic&quot;, _psy,
 	&quot;psySk&quot;, _psySk,
-	&quot;foci&quot;, _foci
+	&quot;foci&quot;, _foci,
+	&quot;eff&quot;, _eff
 ))
 
 (set: $char&#39;s ($e) to it + (a: _tempC))
-(goto: &quot;Statblock&quot;)}</tw-passagedata></tw-storydata>
+(goto: &quot;Statblock&quot;)}</tw-passagedata><tw-passagedata pid="35" name="effort" tags="" position="1025,150" size="100,100">Effort:{
+(link: &quot;-&quot;)[
+	(set: $eff to it - 1)
+	(replace: ?eff)[(display: &quot;effort&quot;)]
+]
+
+(print: (ceil: $hd / 3) + $eff)
+
+(link: &quot;+&quot;)[
+	(set: $eff to it + 1)
+	(replace: ?eff)[(display: &quot;effort&quot;)]
+]
+}</tw-passagedata></tw-storydata>
 <script title="Twine engine code" data-main="harlowe">"use strict";var _slicedToArray=function(){return function(e,t){if(Array.isArray(e))return e;if(Symbol.iterator in Object(e))return function(e,t){var n=[],r=!0,i=!1,a=void 0;try{for(var o,s=e[Symbol.iterator]();!(r=(o=s.next()).done)&&(n.push(o.value),!t||n.length!==t);r=!0);}catch(e){i=!0,a=e}finally{try{!r&&s.return&&s.return()}finally{if(i)throw a}}return n}(e,t);throw new TypeError("Invalid attempt to destructure non-iterable instance")}}(),_typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};function _defineProperty(e,t,n){return t in e?Object.defineProperty(e,t,{value:n,enumerable:!0,configurable:!0,writable:!0}):e[t]=n,e}function _toConsumableArray(e){if(Array.isArray(e)){for(var t=0,n=Array(e.length);t<e.length;t++)n[t]=e[t];return n}return Array.from(e)}!function(){
 /**
  * @license almond 0.3.3 Copyright jQuery Foundation and other contributors.
