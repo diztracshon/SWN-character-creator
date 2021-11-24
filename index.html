@@ -1022,7 +1022,7 @@ Wild talents are not treated as psychics for general purposes and cannot “torc
 ]
 ]}</tw-passagedata><tw-passagedata pid="28" name="Statblock" tags="" position="0,1550" size="100,100">{
 	(set: $bab to (floor: $level / $babM))
-	(if: $babB&#39;s length&gt; 1)[
+	(if: $babB&#39;s length &gt; 1)[
 		(if: $level &gt; $babB&#39;s 1st)[(set: $bab to it + 1)]
 		(if: $level &gt; $babB&#39;s 2nd)[(set: $bab to it + 1)]
 	]
@@ -1791,7 +1791,7 @@ _sk:
 	$advPsy contains _sk or
 	$psychic
 )[
-_sk (if: $psySkList&#39;s (_sk)&#39;s fp &gt; 0)[(print: $psySkList&#39;s (_sk)&#39;s fp) bonus]:
+_sk:
 (if: _edit)[
 (if: _pske&#39;s (_sk)&#39;s score &lt; $psySkList&#39;s (_sk)&#39;s score)[
 	(link: &quot;-&quot;)[
@@ -1804,6 +1804,8 @@ _sk (if: $psySkList&#39;s (_sk)&#39;s fp &gt; 0)[(print: $psySkList&#39;s (_sk)&
 ](else:)[-]]
 
 (print: $psySkList&#39;s (_sk)&#39;s score)
+
+(if: $psySkList&#39;s (_sk)&#39;s fp &gt; 0)[, (print: $psySkList&#39;s (_sk)&#39;s fp)f]
 
 (if: _edit)[
 (if: $sp &gt; $psySkList&#39;s (_sk)&#39;s score + 1)[
