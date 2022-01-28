@@ -2118,7 +2118,7 @@ AC: (print: $armour&#39;s (_i)&#39;s ac + (max: 0,
 		(replace: ?arm)[(display: &quot;arm&quot;)]
 	]
 ]}
-]</tw-passagedata><tw-passagedata pid="50" name="equip" tags="" position="200,1800" size="100,100">&#39;&#39;Equipment&#39;&#39;
+]</tw-passagedata><tw-passagedata pid="50" name="equip" tags="" position="200,1800" size="100,100">&#39;&#39;Equipment&#39;&#39;(set: _temp to 0)
 &#39;&#39;Readied&#39;&#39;(set: $inv&#39;s re to 0)(set: $inv&#39;s rl to 0)
 (for: each _inv, ...(datanames: $inv&#39;s r))[{
 (if: $inv&#39;s r&#39;s (_inv)&#39;s qt &gt; 0)[
@@ -2150,25 +2150,23 @@ _inv(if: (datanames:$inv&#39;s r&#39;s (_inv)) contains &quot;num&quot;)[ (print
 ]
 
 (link: &quot;stow&quot;)[
-	(set: _temp to (num:(prompt: &quot;Amount&quot;, &quot;&quot;)))
 	(if: (datanames:$inv&#39;s s) contains _inv)[
 		(set: $inv&#39;s s&#39;s (_inv)&#39;s qt to it + 1)
 	](else:)[
 		(set: $inv&#39;s s to it + (dm: _inv, (dm:
 			&quot;enc&quot;, $inv&#39;s r&#39;s (_inv)&#39;s enc,
-			&quot;qt&quot;, (min:_temp, $inv&#39;s r&#39;s (_inv)&#39;s qt)
+			&quot;qt&quot;, (min:(num:(prompt: &quot;Amount&quot;, &quot;&quot;)), $inv&#39;s r&#39;s (_inv)&#39;s qt)
 		)))
 	]
-	(set: $inv&#39;s r&#39;s (_inv)&#39;s qt to it - (min:_temp,
+	(set: $inv&#39;s r&#39;s (_inv)&#39;s qt to it - (min:(num:(prompt: &quot;Amount&quot;, &quot;&quot;)),
 		$inv&#39;s r&#39;s (_inv)&#39;s qt))
 	(replace: ?equip)[(display: &quot;equip&quot;)]
 ]
 
 (link: &quot;other&quot;)[
-	(set: _temp to (num:(prompt: &quot;Amount&quot;, &quot;&quot;)))
-	(set: $inv&#39;s o&#39;s (_inv)&#39;s qt to it + (min:_temp,
+	(set: $inv&#39;s o&#39;s (_inv)&#39;s qt to it + (min:(num:(prompt: &quot;Amount&quot;, &quot;&quot;)),
 		$inv&#39;s r&#39;s (_inv)&#39;s qt))
-	(set: $inv&#39;s r&#39;s (_inv)&#39;s qt to it - (min:_temp,
+	(set: $inv&#39;s r&#39;s (_inv)&#39;s qt to it - (min:(num:(prompt: &quot;Amount&quot;, &quot;&quot;)),
 		$inv&#39;s r&#39;s (_inv)&#39;s qt))
 	(replace: ?equip)[(display: &quot;equip&quot;)]
 ]
@@ -2207,26 +2205,24 @@ _inv(if: (datanames: $inv&#39;s s&#39;s (_inv)) contains &quot;num&quot;)[ (prin
 ]
 
 (link: &quot;other&quot;)[
-	(set: _temp to (num:(prompt: &quot;Amount&quot;, &quot;&quot;)))
-	(set: $inv&#39;s o&#39;s (_inv)&#39;s qt to it + (min:_temp,
+	(set: $inv&#39;s o&#39;s (_inv)&#39;s qt to it + (min:(num:(prompt: &quot;Amount&quot;, &quot;&quot;)),
 		$inv&#39;s s&#39;s (_inv)&#39;s qt))
-	(set: $inv&#39;s s&#39;s (_inv)&#39;s qt to it - (min:_temp,
+	(set: $inv&#39;s s&#39;s (_inv)&#39;s qt to it - (min:(num:(prompt: &quot;Amount&quot;, &quot;&quot;)),
 		$inv&#39;s s&#39;s (_inv)&#39;s qt))
 	(replace: ?equip)[(display: &quot;equip&quot;)]
 ]
 
 (link: &quot;readied&quot;)[
-	(set: _tempt to (num:(prompt: &quot;Amount&quot;, &quot;&quot;)))
 	(if: (datanames:$inv&#39;s r) contains _inv)[
-		(set: $inv&#39;s r&#39;s (_inv)&#39;s qt to it + (min:_temp,
+		(set: $inv&#39;s r&#39;s (_inv)&#39;s qt to it + (min:(num:(prompt: &quot;Amount&quot;, &quot;&quot;)),
 			$inv&#39;s s&#39;s (_inv)&#39;s qt))
 	](else:)[
 		(set: $inv&#39;s r to it + (dm: _inv, (dm:
 			&quot;enc&quot;, $inv&#39;s s&#39;s (_inv)&#39;s enc,
-			&quot;qt&quot;, (min: _temp, $inv&#39;s s&#39;s (_inv)&#39;s qt)
+			&quot;qt&quot;, (min: (num:(prompt: &quot;Amount&quot;, &quot;&quot;)), $inv&#39;s s&#39;s (_inv)&#39;s qt)
 		)))
 	]
-	(set: $inv&#39;s s&#39;s (_inv)&#39;s qt to it - (min:_temp,
+	(set: $inv&#39;s s&#39;s (_inv)&#39;s qt to it - (min:(num:(prompt: &quot;Amount&quot;, &quot;&quot;)),
 		$inv&#39;s s&#39;s (_inv)&#39;s qt))
 	(replace: ?equip)[(display: &quot;equip&quot;)]
 ]
@@ -2260,33 +2256,31 @@ _inv(if: (datanames:$inv&#39;s o&#39;s (_inv)) contains &quot;num&quot;)[ (print
 ]
 
 (link: &quot;stow&quot;)[
-	(set: _temp to (num: (prompt: &quot;Amount&quot;, &quot;&quot;)))
 	(if: (datanames:$inv&#39;s s) contains _inv)[
-		(set: $inv&#39;s s&#39;s (_inv)&#39;s qt to it + (min: _temp,
+		(set: $inv&#39;s s&#39;s (_inv)&#39;s qt to it + (min: (num:(prompt: &quot;Amount&quot;, &quot;&quot;)),
 			$inv&#39;s o&#39;s (_inv)&#39;s qt))
 	](else:)[
 		(set: $inv&#39;s s to it + (dm: _inv, (dm:
 			&quot;enc&quot;, $inv&#39;s o&#39;s (_inv)&#39;s enc, 
-			&quot;qt&quot;, (min: _temp, $inv&#39;s o&#39;s (_inv)&#39;s qt)
+			&quot;qt&quot;, (min: (num:(prompt: &quot;Amount&quot;, &quot;&quot;)), $inv&#39;s o&#39;s (_inv)&#39;s qt)
 		)))
 	]
-	(set: $inv&#39;s o&#39;s (_inv)&#39;s qt to it - (min: _temp,
+	(set: $inv&#39;s o&#39;s (_inv)&#39;s qt to it - (min: (num:(prompt: &quot;Amount&quot;, &quot;&quot;)),
 		$inv&#39;s o&#39;s (_inv)&#39;s qt))
 	(replace: ?equip)[(display: &quot;equip&quot;)]
 ]
 
 (link: &quot;ready&quot;)[
-	(set: _temp to (num: (prompt: &quot;Amount&quot;, &quot;&quot;)))
 	(if: (datanames:$inv&#39;s r) contains _inv)[
-		(set: $inv&#39;s r&#39;s (_inv)&#39;s qt to it + (min: _temp,
+		(set: $inv&#39;s r&#39;s (_inv)&#39;s qt to it + (min: (num:(prompt: &quot;Amount&quot;, &quot;&quot;)),
 			$inv&#39;s o&#39;s (_inv)&#39;s qt))
 	](else:)[
 		(set: $inv&#39;s r to it + (dm: _inv, (dm:
 			&quot;enc&quot;, $inv&#39;s o&#39;s (_inv)&#39;s enc,
-			&quot;qt&quot;, (min: _temp, $inv&#39;s o&#39;s (_inv)&#39;s qt)
+			&quot;qt&quot;, (min: (num:(prompt: &quot;Amount&quot;, &quot;&quot;)), $inv&#39;s o&#39;s (_inv)&#39;s qt)
 		)))
 	]
-	(set: $inv&#39;s o&#39;s (_inv)&#39;s qt to it - (min: _temp,
+	(set: $inv&#39;s o&#39;s (_inv)&#39;s qt to it - (min: (num:(prompt: &quot;Amount&quot;, &quot;&quot;)),
 		$inv&#39;s o&#39;s (_inv)&#39;s qt))
 	(replace: ?equip)[(display: &quot;equip&quot;)]
 ]
